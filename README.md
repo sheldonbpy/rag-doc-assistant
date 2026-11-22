@@ -52,3 +52,15 @@ python -m uvicorn api:app --reload      # http://127.0.0.1:8000/docs
 ```
 `POST /ask` with `{"question": "..."}` returns `answer`, `sources`, `refused` and `reason`. `GET /health` checks the service is up. Returns 503 if Ollama is not running.
 
+
+## Docker
+Requires Docker Desktop and Ollama running on the host machine (the container reaches it via `host.docker.internal`).
+
+    docker build -t rag-doc-assistant .
+    docker run --rm -v chroma_data:/app/chroma_db -v hf_cache:/app/.cache/huggingface rag-doc-assistant python ingest.py
+    docker run --rm -p 8000:8000 -v chroma_data:/app/chroma_db -v hf_cache:/app/.cache/huggingface rag-doc-assistant
+
+The first `docker run` builds the vector database into a Docker volume; the second starts the API on http://localhost:8000 (docs at `/docs`). `requirements-docker.txt` is a trimmed dependency list (no Streamlit) to keep the image smaller.
+
+## Tests and CI
+`python -m pytest` runs 12 unit tests (guardrails, citation checks, deduplication, API behaviour) with the LLM and vector DB stubbed out. GitHub Actions runs them on every push. The 19-question evaluation (`eval.py`) needs Ollama, so it runs locally, not in CI.
