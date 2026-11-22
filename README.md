@@ -1,5 +1,7 @@
 ﻿# RAG Document Assistant for scikit-learn Docs
 
+![CI](https://github.com/sheldonbpy/rag-doc-assistant/actions/workflows/ci.yml/badge.svg)
+
 ![Answer with citations](screenshots/answer.png)
 
 ![Refusal](screenshots/refusal.png)
@@ -49,3 +51,4 @@ Hybrid search (BM25 + vectors), a reranker, per-sentence entailment checks, a la
 python -m uvicorn api:app --reload      # http://127.0.0.1:8000/docs
 ```
 `POST /ask` with `{"question": "..."}` returns `answer`, `sources`, `refused` and `reason`. `GET /health` checks the service is up. Returns 503 if Ollama is not running.
+
