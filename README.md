@@ -43,3 +43,9 @@ Note: two refusal tests were swapped after an early run showed my labels were wr
 
 ## Ideas
 Hybrid search (BM25 + vectors), a reranker, per-sentence entailment checks, a larger test set.
+
+## API
+```bash
+python -m uvicorn api:app --reload      # http://127.0.0.1:8000/docs
+```
+`POST /ask` with `{"question": "..."}` returns `answer`, `sources`, `refused` and `reason`. `GET /health` checks the service is up. Returns 503 if Ollama is not running.
