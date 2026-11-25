@@ -60,7 +60,13 @@ Requires Docker Desktop and Ollama running on the host machine (the container re
     docker run --rm -v chroma_data:/app/chroma_db -v hf_cache:/app/.cache/huggingface rag-doc-assistant python ingest.py
     docker run --rm -p 8000:8000 -v chroma_data:/app/chroma_db -v hf_cache:/app/.cache/huggingface rag-doc-assistant
 
-The first `docker run` builds the vector database into a Docker volume; the second starts the API on http://localhost:8000 (docs at `/docs`). `requirements-docker.txt` is a trimmed dependency list (no Streamlit) to keep the image smaller.
+The first `docker run` builds the vector database into a Docker volume; the second starts the API on http://localhost:8000 (docs at `/docs`). `requirements-docker.txt` is the dependency list used by the image (Streamlit, FastAPI, ChromaDB, sentence-transformers).
 
 ## Tests and CI
 `python -m pytest` runs 12 unit tests (guardrails, citation checks, deduplication, API behaviour) with the LLM and vector DB stubbed out. GitHub Actions runs them on every push. The 19-question evaluation (`eval.py`) needs Ollama, so it runs locally, not in CI.
+
+
+### Chat page in Docker
+To run the Streamlit chat UI from the same image (open http://localhost:8501):
+
+    docker run --rm -p 8501:8501 -v chroma_data:/app/chroma_db -v hf_cache:/app/.cache/huggingface rag-doc-assistant python -m streamlit run app.py --server.address 0.0.0.0 --server.port 8501 --server.headless true
